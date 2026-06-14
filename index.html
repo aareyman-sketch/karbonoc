@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KarbonoC | Consultoría en Huella de Carbono y Certificación HuellaChile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --verde-bosque: #1B3A2D;
+    --verde-lima: #6DB33F;
+    --verde-claro: #A8D572;
+    --hueso: #F7F9F5;
+    --carbon: #1E1E1E;
+    --gris: #6B7A6C;
+    --borde: #D4E0D0;
+    --blanco: #ffffff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--hueso);
+    color: var(--carbon);
+    line-height: 1.6;
+    font-size: 16px;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(27, 58, 45, 0.96);
+    backdrop-filter: blur(8px);
+    padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+    border-bottom: 1px solid rgba(109, 179, 63, 0.2);
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    color: var(--blanco);
+    letter-spacing: -0.3px;
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--verde-lima); }
+  .nav-dot {
+    width: 8px; height: 8px;
+    background: var(--verde-lima);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--verde-claro); }
+  .nav-cta {
+    background: var(--verde-lima);
+    color: var(--carbon) !important;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: 600 !important;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--verde-claro) !important; }
+
+  /* TOOLTIP C */
+  .karbono-c {
+    position: relative;
+    cursor: help;
+    display: inline-block;
+  }
+  .karbono-c::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    border: 5px solid transparent;
+    border-bottom-color: rgba(15, 34, 24, 0.97);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+  .karbono-c:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .karbono-tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: rgba(15, 34, 24, 0.97);
+    border: 1px solid rgba(109,179,63,0.35);
+    border-radius: 8px;
+    padding: 12px 16px;
+    width: 200px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 999;
+  }
+  .karbono-c:hover .karbono-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .karbono-tooltip-title {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--verde-lima);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .karbono-tooltip-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .karbono-tooltip-row:last-child { border-bottom: none; }
+  .karbono-tooltip-icon {
+    width: 20px; height: 20px;
+    background: rgba(109,179,63,0.15);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    color: var(--verde-lima);
+    font-family: 'DM Serif Display', serif;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  .karbono-tooltip-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.3;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: var(--verde-bosque);
+    display: flex; align-items: center;
+    padding: 120px 5% 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 70% 50%, rgba(109,179,63,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 60px;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .hero-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--verde-lima);
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+    line-height: 1.1;
+    color: var(--blanco);
+    margin-bottom: 24px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--verde-lima);
+  }
+  .hero-desc {
+    color: rgba(255,255,255,0.65);
+    font-size: 1.05rem;
+    max-width: 480px;
+    margin-bottom: 40px;
+    line-height: 1.7;
+  }
+  .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--verde-lima);
+    color: var(--carbon);
+    padding: 14px 28px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--verde-claro); transform: translateY(-1px); }
+  .btn-secondary {
+    border: 1px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.8);
+    padding: 14px 28px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: border-color 0.2s, color 0.2s;
+    display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--verde-lima); color: var(--verde-lima); }
+
+  /* HERO CARD */
+  .hero-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(109,179,63,0.3);
+    border-radius: 12px;
+    padding: 32px;
+    backdrop-filter: blur(8px);
+  }
+  .hero-card-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--verde-lima);
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .sello-row {
+    display: flex; gap: 12px; justify-content: center; margin-bottom: 24px;
+  }
+  .sello-item {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    flex: 1;
+  }
+  .sello-circle {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: 2px solid;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+  .sello-circle:hover { transform: scale(1.08); }
+  .sello-1 { background: rgba(109,179,63,0.15); border-color: #6DB33F; color: #6DB33F; }
+  .sello-2 { background: rgba(109,179,63,0.25); border-color: #5AA02E; color: #5AA02E; }
+  .sello-3 { background: rgba(109,179,63,0.35); border-color: #468A20; color: #468A20; }
+  .sello-4 { background: rgba(109,179,63,0.5); border-color: #2F6B12; color: #2F6B12; }
+  .sello-label {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .sello-progress-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .sello-progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--verde-lima);
+    width: 0%;
+    transition: width 1.5s ease;
+  }
+  .hero-stat-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-top: 20px;
+  }
+  .hero-stat {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+  }
+  .hero-stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--verde-lima);
+    display: block;
+    line-height: 1;
+  }
+  .hero-stat-desc {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.45);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* SECCIONES GENERALES */
+  section { padding: 100px 5%; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--verde-lima);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    line-height: 1.2;
+    color: var(--carbon);
+    margin-bottom: 16px;
+  }
+  .section-desc {
+    color: var(--gris);
+    max-width: 560px;
+    line-height: 1.75;
+    font-size: 1rem;
+  }
+
+  /* DRIVERS (por qué ocurre) */
+  #drivers { background: var(--blanco); }
+  .drivers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+    margin-top: 56px;
+  }
+  .driver-card {
+    border-left: 3px solid var(--verde-lima);
+    padding: 0 0 0 24px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .driver-card.visible { opacity: 1; transform: none; }
+  .driver-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: var(--verde-bosque);
+  }
+  .driver-card p { color: var(--gris); font-size: 0.95rem; line-height: 1.7; }
+
+  /* ACOMPAÑAMIENTO */
+  #acompanamiento { background: var(--hueso); }
+  .acomp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-top: 56px;
+  }
+  .acomp-text p {
+    color: var(--gris);
+    margin-bottom: 16px;
+    line-height: 1.75;
+  }
+  .check-list { list-style: none; margin-top: 28px; }
+  .check-list li {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--borde);
+    font-size: 0.95rem;
+  }
+  .check-list li:last-child { border-bottom: none; }
+  .check-icon {
+    width: 20px; height: 20px;
+    background: var(--verde-lima);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .check-icon svg { width: 10px; height: 10px; }
+  .acomp-visual {
+    background: var(--verde-bosque);
+    border-radius: 12px;
+    padding: 36px;
+    color: var(--blanco);
+  }
+  .acomp-visual-title {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--verde-lima);
+    margin-bottom: 24px;
+    font-weight: 600;
+  }
+  .emission-bar { margin-bottom: 18px; }
+  .emission-label {
+    display: flex; justify-content: space-between;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 6px;
+  }
+  .emission-track {
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .emission-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--verde-lima), var(--verde-claro));
+    width: 0%;
+    transition: width 1.5s ease 0.3s;
+  }
+  .emission-total {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 20px;
+    margin-top: 20px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--verde-lima);
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .emission-total span {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  /* PROCESO */
+  #proceso { background: var(--verde-bosque); }
+  #proceso .section-title { color: var(--blanco); }
+  #proceso .section-desc { color: rgba(255,255,255,0.55); }
+  #proceso .section-eyebrow { color: var(--verde-lima); }
+  .proceso-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 56px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .paso {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 36px 28px;
+    transition: background 0.3s;
+    position: relative;
+    cursor: default;
+  }
+  .paso:hover { background: rgba(109,179,63,0.1); }
+  .paso-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    color: rgba(109,179,63,0.25);
+    line-height: 1;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .paso-icon {
+    width: 40px; height: 40px;
+    background: var(--verde-lima);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+  }
+  .paso-icon svg { width: 20px; height: 20px; fill: var(--carbon); }
+  .paso h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--blanco);
+    margin-bottom: 12px;
+  }
+  .paso p { color: rgba(255,255,255,0.5); font-size: 0.9rem; line-height: 1.65; }
+
+  /* SELLOS */
+  #sellos { background: var(--blanco); }
+  .sellos-intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    margin: 56px 0 48px;
+  }
+  .alcance-card {
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    padding: 28px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .alcance-card:hover {
+    border-color: var(--verde-lima);
+    box-shadow: 0 4px 24px rgba(109,179,63,0.1);
+  }
+  .alcance-icon {
+    width: 44px; height: 44px;
+    background: #EDF7E5;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+  }
+  .alcance-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: var(--verde-bosque);
+  }
+  .alcance-card p { color: var(--gris); font-size: 0.9rem; line-height: 1.65; }
+  .sellos-niveles {
+    background: var(--hueso);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+  }
+  .sellos-niveles-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 32px;
+    color: var(--verde-bosque);
+  }
+  .sellos-track {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto 24px;
+  }
+  .sello-nivel {
+    flex: 1;
+    text-align: center;
+    position: relative;
+  }
+  .sello-nivel::after {
+    content: '';
+    position: absolute;
+    top: 40px;
+    right: -1px;
+    width: 2px;
+    height: 20px;
+    background: var(--borde);
+  }
+  .sello-nivel:last-child::after { display: none; }
+  .sello-badge {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border: 2px solid;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    flex-direction: column;
+    gap: 2px;
+    transition: transform 0.3s;
+    cursor: default;
+  }
+  .sello-badge:hover { transform: scale(1.08); }
+  .sello-badge .badge-n { font-size: 1.4rem; font-family: 'DM Serif Display', serif; }
+  .badge-cuantificacion { background: #EDF7E5; border-color: #6DB33F; color: #3a7a1a; }
+  .badge-reduccion { background: #D4EFBD; border-color: #5AA02E; color: #2d6310; }
+  .badge-compensacion { background: #B8E09A; border-color: #468A20; color: #1f4d0a; }
+  .badge-excelencia { background: #8FCA6A; border-color: #2F6B12; color: #0a2e02; }
+  .sello-nivel-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--carbon);
+    margin-bottom: 4px;
+  }
+  .sello-nivel-desc {
+    font-size: 0.72rem;
+    color: var(--gris);
+    line-height: 1.4;
+  }
+  .sellos-footnote {
+    margin-top: 24px;
+    font-size: 0.85rem;
+    color: var(--gris);
+    font-style: italic;
+  }
+
+  /* FAQ */
+  #faq { background: var(--hueso); }
+  .faq-cols {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 60px;
+    margin-top: 56px;
+    align-items: start;
+  }
+  .faq-sticky {
+    position: sticky;
+    top: 80px;
+  }
+  .faq-sticky p {
+    color: var(--gris);
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+  .faq-item {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .faq-item:hover { border-color: var(--verde-lima); }
+  .faq-q {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: var(--carbon);
+    gap: 16px;
+  }
+  .faq-chevron {
+    width: 20px; height: 20px;
+    flex-shrink: 0;
+    transition: transform 0.25s;
+    color: var(--verde-lima);
+  }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .faq-a-inner {
+    padding: 0 24px 20px;
+    color: var(--gris);
+    font-size: 0.9rem;
+    line-height: 1.75;
+  }
+
+  /* CTA */
+  #contacto {
+    background: linear-gradient(135deg, var(--verde-bosque) 0%, #0f2218 100%);
+    text-align: center;
+  }
+  #contacto .section-title { color: var(--blanco); }
+  #contacto .section-desc { color: rgba(255,255,255,0.55); margin: 0 auto 48px; }
+  .contact-form {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(109,179,63,0.2);
+    border-radius: 12px;
+    padding: 48px;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .form-row { margin-bottom: 20px; }
+  .form-row label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 8px;
+  }
+  .form-row input,
+  .form-row select,
+  .form-row textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 12px 16px;
+    color: var(--blanco);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-row input:focus,
+  .form-row select:focus,
+  .form-row textarea:focus {
+    border-color: var(--verde-lima);
+  }
+  .form-row select option { background: var(--verde-bosque); color: var(--blanco); }
+  .form-row textarea { resize: vertical; min-height: 100px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-submit {
+    width: 100%;
+    background: var(--verde-lima);
+    color: var(--carbon);
+    border: none;
+    padding: 16px;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+  }
+  .form-submit:hover { background: var(--verde-claro); }
+  .form-note {
+    text-align: center;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.3);
+    margin-top: 16px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: #0a1a10;
+    color: rgba(255,255,255,0.4);
+    padding: 40px 5%;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer .footer-logo {
+    font-family: 'DM Serif Display', serif;
+    color: var(--blanco);
+    font-size: 1.1rem;
+  }
+  footer .footer-logo span { color: var(--verde-lima); }
+  footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
+  footer a:hover { color: var(--verde-lima); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-card { display: none; }
+    .drivers-grid { grid-template-columns: 1fr; }
+    .acomp-grid { grid-template-columns: 1fr; }
+    .proceso-steps { grid-template-columns: 1fr 1fr; }
+    .sellos-intro { grid-template-columns: 1fr; }
+    .faq-cols { grid-template-columns: 1fr; }
+    .faq-sticky { position: relative; top: 0; }
+    .form-grid { grid-template-columns: 1fr; }
+    .sellos-track { flex-direction: column; align-items: center; gap: 20px; }
+    .sello-nivel::after { display: none; }
+    nav .nav-links { display: none; }
+  }
+  @media (max-width: 600px) {
+    .proceso-steps { grid-template-columns: 1fr; }
+    section { padding: 70px 6%; }
+    .contact-form { padding: 28px 20px; }
+  }
+
+  /* ANIMACIONES */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-dot"></div>
+    Karbono<span class="karbono-c">C
+      <div class="karbono-tooltip">
+        <div class="karbono-tooltip-title">La C significa…</div>
+        <div class="karbono-tooltip-row">
+          <div class="karbono-tooltip-icon">C</div>
+          <span class="karbono-tooltip-text"><strong style="color:#fff">Carbono</strong> · Elemento nº6 de la tabla periódica</span>
+        </div>
+        <div class="karbono-tooltip-row">
+          <div class="karbono-tooltip-icon">C</div>
+          <span class="karbono-tooltip-text"><strong style="color:#fff">Consultoría</strong> · Acompañamiento experto</span>
+        </div>
+        <div class="karbono-tooltip-row">
+          <div class="karbono-tooltip-icon">C</div>
+          <span class="karbono-tooltip-text"><strong style="color:#fff">Cero</strong> · Meta de cero emisiones</span>
+        </div>
+      </div>
+    </span>
+  </a>
+  <div class="nav-links">
+    <a href="#drivers">¿Por qué certificarse?</a>
+    <a href="#proceso">El proceso</a>
+    <a href="#sellos">Sellos</a>
+    <a href="#faq">Preguntas</a>
+    <a href="#contacto" class="nav-cta">Solicitar propuesta</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Consultoría en Gestión Climática · Chile</p>
+      <h1>Certifica la <em>huella de carbono</em> de tu organización</h1>
+      <p class="hero-desc">Acompañamos a empresas desde la medición de emisiones hasta la obtención del sello HuellaChile, con un proceso técnico riguroso y acompañamiento experto en cada etapa.</p>
+      <div class="hero-btns">
+        <a href="#contacto" class="btn-primary">Solicitar propuesta</a>
+        <a href="#proceso" class="btn-secondary">Ver el proceso →</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <p class="hero-card-title">Niveles de certificación HuellaChile</p>
+      <div class="sello-row">
+        <div class="sello-item">
+          <div class="sello-circle sello-1">N1</div>
+          <div class="sello-progress-bar"><div class="sello-progress-fill" data-w="100"></div></div>
+          <span class="sello-label">Cuantificación</span>
+        </div>
+        <div class="sello-item">
+          <div class="sello-circle sello-2">N2</div>
+          <div class="sello-progress-bar"><div class="sello-progress-fill" data-w="70"></div></div>
+          <span class="sello-label">Reducción</span>
+        </div>
+        <div class="sello-item">
+          <div class="sello-circle sello-3">N3</div>
+          <div class="sello-progress-bar"><div class="sello-progress-fill" data-w="40"></div></div>
+          <span class="sello-label">Compensación</span>
+        </div>
+        <div class="sello-item">
+          <div class="sello-circle sello-4">★</div>
+          <div class="sello-progress-bar"><div class="sello-progress-fill" data-w="20"></div></div>
+          <span class="sello-label">Excelencia</span>
+        </div>
+      </div>
+      <div class="hero-stat-row">
+        <div class="hero-stat">
+          <span class="hero-stat-num">GEI</span>
+          <div class="hero-stat-desc">Estándar ISO 14064</div>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">GHG</span>
+          <div class="hero-stat-desc">Protocolo internacional</div>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">3</span>
+          <div class="hero-stat-desc">Alcances cubiertos</div>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">✓</span>
+          <div class="hero-stat-desc">Verificación externa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DRIVERS -->
+<section id="drivers">
+  <div class="section-inner">
+    <p class="section-eyebrow">Por qué ocurre</p>
+    <h2 class="section-title">El proceso suele comenzar por<br>una exigencia externa</h2>
+    <p class="section-desc">Más que un requisito burocrático, la certificación es una forma de formalizar y comunicar la gestión ambiental de tu organización frente a quienes importan.</p>
+    <div class="drivers-grid">
+      <div class="driver-card">
+        <h3>Licitaciones y Mercado Público</h3>
+        <p>Cada vez más organizaciones incorporan criterios ambientales en sus procesos de compra pública. Contar con la certificación HuellaChile mejora el posicionamiento técnico en evaluaciones competitivas.</p>
+      </div>
+      <div class="driver-card">
+        <h3>Clientes y mandantes privados</h3>
+        <p>Grandes compañías —especialmente en minería, energía e industria— exigen información estructurada sobre emisiones y gestión ambiental a sus proveedores y contratistas.</p>
+      </div>
+      <div class="driver-card">
+        <h3>Posicionamiento de marca</h3>
+        <p>El sello HuellaChile es una señal concreta y verificada de gestión climática frente a stakeholders, comunidades y medios, más allá de declaraciones voluntarias.</p>
+      </div>
+      <div class="driver-card">
+        <h3>Estrategia climática corporativa</h3>
+        <p>Para organizaciones con compromisos de reducción de emisiones o metas de carbono neutralidad, la medición rigurosa es el primer paso estructural e indispensable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACOMPAÑAMIENTO -->
+<section id="acompanamiento">
+  <div class="section-inner">
+    <div class="acomp-grid">
+      <div class="acomp-text fade-up">
+        <p class="section-eyebrow">Qué hacemos</p>
+        <h2 class="section-title">Acompañamiento completo en el proceso de certificación</h2>
+        <p>Apoyamos a la empresa en todas las etapas necesarias para avanzar en HuellaChile, desde la cuantificación de emisiones hasta la preparación de la información para verificación externa.</p>
+        <p>El trabajo incluye la medición de huella de carbono organizacional y, cuando aplica, de productos o eventos. Nos encargamos de la estructuración del inventario, generación de reportes técnicos y carga en la plataforma del programa.</p>
+        <ul class="check-list">
+          <li>
+            <div class="check-icon"><svg viewBox="0 0 12 10"><path d="M1 5l4 4 6-8" stroke="#1E1E1E" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+            Levantamiento de datos y fuentes de emisión
+          </li>
+          <li>
+            <div class="check-icon"><svg viewBox="0 0 12 10"><path d="M1 5l4 4 6-8" stroke="#1E1E1E" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+            Cuantificación bajo GHG Protocol e ISO 14064-1
+          </li>
+          <li>
+            <div class="check-icon"><svg viewBox="0 0 12 10"><path d="M1 5l4 4 6-8" stroke="#1E1E1E" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+            Elaboración de informe técnico de emisiones
+          </li>
+          <li>
+            <div class="check-icon"><svg viewBox="0 0 12 10"><path d="M1 5l4 4 6-8" stroke="#1E1E1E" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+            Carga y registro en plataforma HuellaChile
+          </li>
+          <li>
+            <div class="check-icon"><svg viewBox="0 0 12 10"><path d="M1 5l4 4 6-8" stroke="#1E1E1E" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+            Coordinación con entidad verificadora acreditada
+          </li>
+        </ul>
+      </div>
+      <div class="acomp-visual fade-up">
+        <p class="acomp-visual-title">Distribución por alcance · Ejemplo organizacional</p>
+        <div class="emission-bar">
+          <div class="emission-label"><span>Alcance 1 · Emisiones directas</span><span>42%</span></div>
+          <div class="emission-track"><div class="emission-fill" data-w="42"></div></div>
+        </div>
+        <div class="emission-bar">
+          <div class="emission-label"><span>Alcance 2 · Energía eléctrica</span><span>31%</span></div>
+          <div class="emission-track"><div class="emission-fill" data-w="31"></div></div>
+        </div>
+        <div class="emission-bar">
+          <div class="emission-label"><span>Alcance 3 · Cadena de valor</span><span>27%</span></div>
+          <div class="emission-track"><div class="emission-fill" data-w="27"></div></div>
+        </div>
+        <div class="emission-total">
+          1.240 <span>tCO₂e / año</span>
+        </div>
+        <div style="margin-top:16px; font-size:0.75rem; color:rgba(255,255,255,0.3);">
+          Datos ilustrativos · Empresa mediana sector industrial
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section id="proceso">
+  <div class="section-inner">
+    <p class="section-eyebrow">El camino hacia el sello</p>
+    <h2 class="section-title">Un proceso claro para avanzar</h2>
+    <p class="section-desc" style="color:rgba(255,255,255,0.55)">Cuatro etapas estructuradas que van desde la medición inicial hasta la obtención del sello HuellaChile que corresponda al nivel alcanzado.</p>
+    <div class="proceso-steps">
+      <div class="paso">
+        <span class="paso-num">01</span>
+        <div class="paso-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        </div>
+        <h3>Medición</h3>
+        <p>Cuantificación de emisiones de GEI bajo estándares reconocidos internacionalmente (GHG Protocol, ISO 14064-1), cubriendo los alcances que correspondan al tipo de organización.</p>
+      </div>
+      <div class="paso">
+        <span class="paso-num">02</span>
+        <div class="paso-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+        </div>
+        <h3>Registro</h3>
+        <p>Carga estructurada de la información de emisiones en la plataforma oficial del programa HuellaChile del Ministerio del Medio Ambiente, con el formato y la documentación requerida.</p>
+      </div>
+      <div class="paso">
+        <span class="paso-num">03</span>
+        <div class="paso-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Verificación</h3>
+        <p>Revisión externa e independiente por parte de una entidad acreditada por el programa, que valida la información de emisiones y la metodología aplicada antes de otorgar el sello.</p>
+      </div>
+      <div class="paso">
+        <span class="paso-num">04</span>
+        <div class="paso-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <h3>Certificación</h3>
+        <p>Obtención del sello HuellaChile correspondiente al nivel de madurez alcanzado: desde Cuantificación hasta Carbono Neutralidad o Excelencia Climática, según el avance de la organización.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SELLOS -->
+<section id="sellos">
+  <div class="section-inner">
+    <p class="section-eyebrow">Alcances y niveles</p>
+    <h2 class="section-title">¿A qué se puede aplicar la certificación?</h2>
+    <p class="section-desc">La medición puede orientarse a distintas dimensiones de la organización según sus objetivos, exigencias y nivel de avance en gestión climática.</p>
+    <div class="sellos-intro">
+      <div class="alcance-card">
+        <div class="alcance-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3a7a1a" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+        </div>
+        <h3>Huella Organizacional</h3>
+        <p>Medición del inventario de emisiones de GEI de la empresa en su conjunto, cubriendo operaciones, consumo energético y cadena de valor según los alcances definidos.</p>
+      </div>
+      <div class="alcance-card">
+        <div class="alcance-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3a7a1a" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+        </div>
+        <h3>Huella de Producto</h3>
+        <p>Cuantificación de las emisiones asociadas al ciclo de vida de un producto o servicio específico, desde la obtención de materias primas hasta el fin de vida útil (análisis LCA).</p>
+      </div>
+      <div class="alcance-card">
+        <div class="alcance-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3a7a1a" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <h3>Huella de Eventos</h3>
+        <p>Medición de emisiones asociadas a la organización de eventos corporativos, ferias, congresos y actividades, con posibilidad de compensación para declarar el evento neutro en carbono.</p>
+      </div>
+    </div>
+    <div class="sellos-niveles fade-up">
+      <p class="sellos-niveles-title">Progresión de sellos HuellaChile</p>
+      <div class="sellos-track">
+        <div class="sello-nivel">
+          <div class="sello-badge badge-cuantificacion"><span class="badge-n">1</span>Nivel</div>
+          <div class="sello-nivel-name">Cuantificación</div>
+          <div class="sello-nivel-desc">Medición y registro del inventario de emisiones</div>
+        </div>
+        <div class="sello-nivel">
+          <div class="sello-badge badge-reduccion"><span class="badge-n">2</span>Nivel</div>
+          <div class="sello-nivel-name">Reducción</div>
+          <div class="sello-nivel-desc">Plan de reducción de emisiones con metas definidas</div>
+        </div>
+        <div class="sello-nivel">
+          <div class="sello-badge badge-compensacion"><span class="badge-n">3</span>Nivel</div>
+          <div class="sello-nivel-name">Compensación</div>
+          <div class="sello-nivel-desc">Neutralización de emisiones residuales verificadas</div>
+        </div>
+        <div class="sello-nivel">
+          <div class="sello-badge badge-excelencia"><span class="badge-n">★</span>Nivel</div>
+          <div class="sello-nivel-name">Excelencia</div>
+          <div class="sello-nivel-desc">Máximo nivel de madurez en gestión climática</div>
+        </div>
+      </div>
+      <p class="sellos-footnote">Cada nivel refleja un mayor compromiso y madurez en la gestión climática organizacional</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-inner">
+    <div class="faq-cols">
+      <div class="faq-sticky">
+        <p class="section-eyebrow">Preguntas frecuentes</p>
+        <h2 class="section-title" style="font-size:1.9rem">Dudas comunes sobre la certificación</h2>
+        <p>Si tienes preguntas que no están aquí, escríbenos directamente y te respondemos en menos de 24 horas hábiles.</p>
+        <a href="#contacto" class="btn-primary" style="display:inline-block; margin-top:8px;">Hacer una consulta</a>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q">
+            ¿Qué empresas pueden certificarse en HuellaChile?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><div class="faq-a-inner">Cualquier organización que opere en Chile y cuente con información suficiente para cuantificar sus emisiones de gases de efecto invernadero. No hay restricción por tamaño, sector o tipo jurídico.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            ¿Cuánto tiempo demora el proceso completo?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><div class="faq-a-inner">Depende del tamaño de la organización, la disponibilidad y organización de los datos de actividad, y el proceso de verificación con la entidad acreditada. En general, el proceso va entre 2 y 5 meses desde el inicio del levantamiento de datos.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            ¿Es obligatorio certificarse?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><div class="faq-a-inner">No es obligatorio, pero cada vez más empresas lo requieren de sus proveedores y contratistas. Además, en licitaciones públicas y privadas del sector energía, minería e industria, la certificación puede ser un factor diferenciador o incluso requisito de participación.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            ¿Qué información necesito para comenzar?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><div class="faq-a-inner">Principalmente consumos de combustible, datos de energía eléctrica, información sobre flota vehicular, residuos y otros consumos. Durante el diagnóstico inicial te entregamos una lista detallada adaptada al perfil de tu organización.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            ¿La certificación tiene que renovarse?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><div class="faq-a-inner">Sí. El sello HuellaChile tiene validez anual, por lo que el inventario debe actualizarse y verificarse cada año para mantener la certificación vigente. Esto es también una oportunidad para demostrar la evolución en la gestión climática año a año.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            ¿Pueden ayudarnos a reducir o compensar las emisiones?
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><div class="faq-a-inner">Sí. Además de la medición, acompañamos a las organizaciones en la elaboración de planes de reducción (necesarios para avanzar al Nivel 2) y en la estructuración de estrategias de compensación para alcanzar los niveles superiores del programa.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / CONTACTO -->
+<section id="contacto">
+  <div class="section-inner">
+    <p class="section-eyebrow" style="color:var(--verde-lima)">Comienza tu proceso</p>
+    <h2 class="section-title">¿Necesitas medir, certificar o estructurar<br>tu gestión climática?</h2>
+    <p class="section-desc">Cuéntanos el contexto de tu organización y te ayudaremos a identificar la mejor ruta según tus objetivos, nivel de avance y exigencias del mercado.</p>
+    <div class="contact-form">
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Nombre</label>
+          <input type="text" placeholder="Tu nombre">
+        </div>
+        <div class="form-row">
+          <label>Empresa</label>
+          <input type="text" placeholder="Razón social o nombre empresa">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Correo electrónico</label>
+          <input type="email" placeholder="correo@empresa.cl">
+        </div>
+        <div class="form-row">
+          <label>Teléfono</label>
+          <input type="tel" placeholder="+56 9 ···· ····">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Sector / industria</label>
+        <select>
+          <option value="">Selecciona tu sector</option>
+          <option>Energía / Solar / Eólica</option>
+          <option>Minería</option>
+          <option>Industria manufacturera</option>
+          <option>Construcción</option>
+          <option>Servicios / Consultoría</option>
+          <option>Retail / Comercio</option>
+          <option>Agricultura / Forestal</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>¿Qué necesitas?</label>
+        <select>
+          <option value="">Selecciona una opción</option>
+          <option>Medir huella de carbono (por primera vez)</option>
+          <option>Certificación HuellaChile</option>
+          <option>Actualización de inventario anual</option>
+          <option>Estrategia de reducción de emisiones</option>
+          <option>Huella de producto o evento</option>
+          <option>No sé por dónde empezar</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Contexto adicional (opcional)</label>
+        <textarea placeholder="Cuéntanos brevemente el contexto: tamaño de la organización, plazo, exigencias específicas, etc."></textarea>
+      </div>
+      <button class="form-submit">Enviar solicitud de propuesta</button>
+      <p class="form-note">Sin compromiso · Respondemos en menos de 24 horas hábiles</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Karbono<span class="karbono-c" style="position:relative;">C
+      <div class="karbono-tooltip" style="bottom:calc(100% + 10px); top:auto;">
+        <div class="karbono-tooltip-title">La C significa…</div>
+        <div class="karbono-tooltip-row">
+          <div class="karbono-tooltip-icon">C</div>
+          <span class="karbono-tooltip-text"><strong style="color:#fff">Carbono</strong> · Elemento nº6 de la tabla periódica</span>
+        </div>
+        <div class="karbono-tooltip-row">
+          <div class="karbono-tooltip-icon">C</div>
+          <span class="karbono-tooltip-text"><strong style="color:#fff">Consultoría</strong> · Acompañamiento experto</span>
+        </div>
+        <div class="karbono-tooltip-row">
+          <div class="karbono-tooltip-icon">C</div>
+          <span class="karbono-tooltip-text"><strong style="color:#fff">Cero</strong> · Meta de cero emisiones</span>
+        </div>
+      </div>
+    </span> · Consultoría en gestión climática</div>
+  <div>Santiago, Chile · <a href="mailto:contacto@karbonoc.cl">contacto@karbonoc.cl</a></div>
+  <div>© 2026 KarbonoC · Todos los derechos reservados</div>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const answer = item.querySelector('.faq-a');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => {
+        i.classList.remove('open');
+        i.querySelector('.faq-a').style.maxHeight = '0px';
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // IntersectionObserver para animaciones
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        // Barras de emisión
+        entry.target.querySelectorAll && entry.target.querySelectorAll('.emission-fill').forEach(bar => {
+          bar.style.width = bar.dataset.w + '%';
+        });
+        // Barras de sellos
+        entry.target.querySelectorAll && entry.target.querySelectorAll('.sello-progress-fill').forEach(bar => {
+          setTimeout(() => { bar.style.width = bar.dataset.w + '%'; }, 400);
+        });
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.fade-up, .driver-card, .alcance-card').forEach(el => {
+    io.observe(el);
+  });
+
+  // Activar las barras del hero en carga
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.querySelectorAll('.sello-progress-fill').forEach(bar => {
+        bar.style.width = bar.dataset.w + '%';
+      });
+    }, 600);
+    setTimeout(() => {
+      document.querySelectorAll('.emission-fill').forEach(bar => {
+        bar.style.width = bar.dataset.w + '%';
+      });
+    }, 800);
+  });
+
+  // Stagger para driver cards
+  const driverCards = document.querySelectorAll('.driver-card');
+  const driverObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 120);
+        driverObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  driverCards.forEach(c => driverObserver.observe(c));
+</script>
+</body>
+</html>
