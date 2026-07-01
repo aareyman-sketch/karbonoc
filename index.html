@@ -1129,30 +1129,30 @@
     <p class="section-eyebrow" style="color:var(--verde-lima)">Comienza tu proceso</p>
     <h2 class="section-title">¿Necesitas medir, certificar o estructurar<br>tu gestión climática?</h2>
     <p class="section-desc">Cuéntanos el contexto de tu organización y te ayudaremos a identificar la mejor ruta según tus objetivos, nivel de avance y exigencias del mercado.</p>
-    <div class="contact-form">
+    <form class="contact-form" action="https://formspree.io/f/xvzjwpev" method="POST">
       <div class="form-grid">
         <div class="form-row">
           <label>Nombre</label>
-          <input type="text" placeholder="Tu nombre">
+          <input type="text" name="nombre" placeholder="Tu nombre" required>
         </div>
         <div class="form-row">
           <label>Empresa</label>
-          <input type="text" placeholder="Razón social o nombre empresa">
+          <input type="text" name="empresa" placeholder="Razón social o nombre empresa" required>
         </div>
       </div>
       <div class="form-grid">
         <div class="form-row">
           <label>Correo electrónico</label>
-          <input type="email" placeholder="correo@empresa.cl">
+          <input type="email" name="email" placeholder="correo@empresa.cl" required>
         </div>
         <div class="form-row">
           <label>Teléfono</label>
-          <input type="tel" placeholder="+56 9 ···· ····">
+          <input type="tel" name="telefono" placeholder="+56 9 ···· ····">
         </div>
       </div>
       <div class="form-row">
         <label>Sector / industria</label>
-        <select>
+        <select name="sector">
           <option value="">Selecciona tu sector</option>
           <option>Energía / Solar / Eólica</option>
           <option>Minería</option>
@@ -1166,7 +1166,7 @@
       </div>
       <div class="form-row">
         <label>¿Qué necesitas?</label>
-        <select>
+        <select name="necesidad">
           <option value="">Selecciona una opción</option>
           <option>Medir huella de carbono (por primera vez)</option>
           <option>Certificación HuellaChile</option>
@@ -1178,11 +1178,11 @@
       </div>
       <div class="form-row">
         <label>Contexto adicional (opcional)</label>
-        <textarea placeholder="Cuéntanos brevemente el contexto: tamaño de la organización, plazo, exigencias específicas, etc."></textarea>
+        <textarea name="contexto" placeholder="Cuéntanos brevemente el contexto: tamaño de la organización, plazo, exigencias específicas, etc."></textarea>
       </div>
-      <button class="form-submit">Enviar solicitud de propuesta</button>
+      <button type="submit" class="form-submit">Enviar solicitud de propuesta</button>
       <p class="form-note">Sin compromiso · Respondemos en menos de 24 horas hábiles</p>
-    </div>
+    </form>
   </div>
 </section>
 
